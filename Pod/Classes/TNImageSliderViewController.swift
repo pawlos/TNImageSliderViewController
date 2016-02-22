@@ -15,6 +15,7 @@ public struct TNImageSliderViewOptions {
     public var pageControlCurrentIndicatorTintColor:UIColor
     public var autoSlideIntervalInSeconds:NSTimeInterval
     public var shouldStartFromBeginning:Bool
+    public var drawMode:UIViewContentMode
     
     public init(){
         
@@ -24,7 +25,7 @@ public struct TNImageSliderViewOptions {
         self.pageControlCurrentIndicatorTintColor = UIColor.whiteColor()
         self.autoSlideIntervalInSeconds = 0
         self.shouldStartFromBeginning = false
-        
+        self.drawMode = UIViewContentMode.ScaleAspectFit
     }
     
     public init( scrollDirection:UICollectionViewScrollDirection, backgroundColor:UIColor, pageControlHidden:Bool, pageControlCurrentIndicatorTintColor:UIColor){
@@ -35,6 +36,7 @@ public struct TNImageSliderViewOptions {
         self.pageControlCurrentIndicatorTintColor = pageControlCurrentIndicatorTintColor
         self.autoSlideIntervalInSeconds = 0
         self.shouldStartFromBeginning = false
+        self.drawMode = UIViewContentMode.ScaleAspectFit
         
     }
 }
@@ -302,7 +304,7 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TNImageCell", forIndexPath: indexPath) as! TNImageSliderCollectionViewCell
         cell.imageView.image = images[indexPath.row]
-        
+        cell.imageView.contentMode = self.options.drawMode
         return cell
         
     }
