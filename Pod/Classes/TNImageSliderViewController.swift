@@ -245,7 +245,9 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
     }
     
     func timerDidFire(timer: NSTimer) {
-        
+        if images?.count ?? 0 == 0 {
+            return
+        }
         let theNextPage = currentPage + 1
         var contentOffSet = CGPointZero
         
