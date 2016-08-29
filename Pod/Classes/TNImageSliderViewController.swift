@@ -302,13 +302,22 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
         
     }
     
+    public var clickedDelegate:ClickedDelegate?
+    
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TNImageCell", forIndexPath: indexPath) as! TNImageSliderCollectionViewCell
         cell.imageView.image = images[indexPath.row]
         cell.imageView.contentMode = self.options.drawMode
+        
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TNImageSliderViewController.imageClicked(_:))))
+        
         return cell
         
+    }
+    
+    func imageClicked(sender:UITapGestureRecognizer){
+       clickedDelegate?.clicked(self.currentPage)
     }
     
     public func collectionView( collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
@@ -332,4 +341,8 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
         scrollViewDidEndDecelerating(scrollView)
         
     }
+}
+
+public protocol ClickedDelegate{
+   func clicked(currentPage: Int)
 }
