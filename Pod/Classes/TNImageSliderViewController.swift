@@ -7,6 +7,12 @@
 
 import UIKit
 
+public protocol TNImageSliderViewControllerDelegate:class {
+    
+    func imageSlider( imageSlider:TNImageSliderViewController, didScrollToPage pageNumber:Int )
+    
+}
+
 public struct TNImageSliderViewOptions {
     
     public var scrollDirection:UICollectionViewScrollDirection
@@ -15,7 +21,7 @@ public struct TNImageSliderViewOptions {
     public var pageControlCurrentIndicatorTintColor:UIColor
     public var autoSlideIntervalInSeconds:NSTimeInterval
     public var shouldStartFromBeginning:Bool
-    public var drawMode:UIViewContentMode
+    public var imageContentMode:UIViewContentMode
     
     public init(){
         
@@ -25,10 +31,10 @@ public struct TNImageSliderViewOptions {
         self.pageControlCurrentIndicatorTintColor = UIColor.whiteColor()
         self.autoSlideIntervalInSeconds = 0
         self.shouldStartFromBeginning = false
-        self.drawMode = UIViewContentMode.ScaleAspectFit
+        self.imageContentMode = .ScaleAspectFit
     }
     
-    public init( scrollDirection:UICollectionViewScrollDirection, backgroundColor:UIColor, pageControlHidden:Bool, pageControlCurrentIndicatorTintColor:UIColor){
+    public init( scrollDirection:UICollectionViewScrollDirection, backgroundColor:UIColor, pageControlHidden:Bool, pageControlCurrentIndicatorTintColor:UIColor, imageContentMode:UIViewContentMode){
         
         self.scrollDirection = scrollDirection
         self.backgroundColor = backgroundColor
@@ -36,8 +42,7 @@ public struct TNImageSliderViewOptions {
         self.pageControlCurrentIndicatorTintColor = pageControlCurrentIndicatorTintColor
         self.autoSlideIntervalInSeconds = 0
         self.shouldStartFromBeginning = false
-        self.drawMode = UIViewContentMode.ScaleAspectFit
-        
+        self.imageContentMode = .ScaleAspectFit
     }
 }
 
@@ -46,6 +51,8 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
     // MARK: - IBOutlets
     
     // MARK: - Properties
+    public weak var delegate:TNImageSliderViewControllerDelegate?
+    
     var collectionView:UICollectionView!
     var collectionViewLayout:UICollectionViewFlowLayout {
     
@@ -239,7 +246,7 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
     private func setupAutoSliderIfNeeded() {
         
         if options.autoSlideIntervalInSeconds > 0 {
-            NSTimer.scheduledTimerWithTimeInterval(options.autoSlideIntervalInSeconds, target: self, selector: "timerDidFire:", userInfo: nil, repeats: true)
+            NSTimer.scheduledTimerWithTimeInterval(options.autoSlideIntervalInSeconds, target: self, selector: #selector(TNImageSliderViewController.timerDidFire(_:)), userInfo: nil, repeats: true)
         }
         
     }
@@ -307,8 +314,10 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TNImageCell", forIndexPath: indexPath) as! TNImageSliderCollectionViewCell
+        
         cell.imageView.image = images[indexPath.row]
-        cell.imageView.contentMode = self.options.drawMode
+
+        cell.imageView.contentMode = self.options.imageContentMode
         
         cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TNImageSliderViewController.imageClicked(_:))))
         
@@ -332,6 +341,8 @@ public class TNImageSliderViewController: UIViewController, UICollectionViewData
         
         // If the scroll animation ended, update the page control to reflect the current page we are on
         pageControl.currentPage = currentPage
+        
+        self.delegate?.imageSlider(self, didScrollToPage: currentPage)
         
     }
     

@@ -21,17 +21,19 @@ TNImageSliderViewController is available through [CocoaPods](http://cocoapods.or
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "TNImageSliderViewController"
+pod 'TNImageSliderViewController'
 ```
 
 ### Using storyboards
 * Add a container view to your Storyboard.
 * Set the class in the Identity Inspector to `TNImageSliderViewController`
+* Set the `module` field to `TNImageSliderViewController` if you work with CocoaPods
 * Give the embed segue a name e.g `seg_imageSlider`
 * Go to the ViewController class in which you have embedded the TNImageSliderViewController class
+* At the top of the file, import `TNImageSliderViewController`
 * Create a property to hold the instance of `TNImageSliderViewController`
 * Fill in this property in `prepareForSegue:identifier:`
-* Set the `images` property of the `TNImageSliderViewController` to an array of UIImage objects
+* Set the `images` property of the `TNImageSliderViewController` to an array of UIImage objects, only set this property after the `viewDidLoad` method has been executed or you will get a runtime error
 
 If you want, you can also set the `options` property (instance of `TNImageSliderViewOptions`)
 
@@ -40,8 +42,14 @@ If you want, you can also set the `options` property (instance of `TNImageSlider
 | scrollDirection   | Set the collectionview to scroll horizontal or vertical  |
 | backgroundColor   | A UIColor object to set the background color of the collectionview   |
 | pageControlHidden | Hides the UIPageControl |  
-| pageControlCurrentIndicatorTintColor | A UIColor object to set the indicator color |  
+| pageControlCurrentIndicatorTintColor | A UIColor object to set the indicator color |
+| pageControlCurrentIndicatorTintColor | A UIColor object to set the indicator color |
+| shouldStartFromBeginning | Boolean, start at the first picture |
+| imageContentMode | UIViewContentMode, How should the images be scaled |
 
+### Delegate
+If you want to be informed that the image slider has scrolled to a specific page, you can set the `delegate` property.
+The delegate has one method `imageSlider( imageSlider:TNImageSliderViewController, didScrollToPage pageNumber:Int )`
 
 ## Author
 
